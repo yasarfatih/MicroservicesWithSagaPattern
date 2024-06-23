@@ -1,16 +1,19 @@
-﻿using System;
+﻿using Shared.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared
+namespace Shared.Events
 {
-    public class OrderCreatedEvent
+    public class OrderCreatedEvent:IOrderCreatedEvent
     {
         public int OrderId { get; set; }
         public string BuyerId { get; set; }
         public PaymentMessage Payment { get; set; }
         public List<OrderItemMessage> OrderItems { get; set; } = new List<OrderItemMessage>();
+
+        public Guid CorrelationId => throw new NotImplementedException();
     }
 }
