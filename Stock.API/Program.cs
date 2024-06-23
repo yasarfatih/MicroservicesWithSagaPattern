@@ -1,7 +1,6 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using Stock.API.Consumer;
 using Stock.API.Model;
 
 
@@ -11,19 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<OrderCreatedEventConsumer>();
-    x.AddConsumer<PaymentFailedEventConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
-        cfg.ReceiveEndpoint(RabbitMQSettingsConst.StockOrderCreatedEventQueueName, y =>
-            {
-                y.ConfigureConsumer<OrderCreatedEventConsumer>(context);
-            });
-        cfg.ReceiveEndpoint(RabbitMQSettingsConst.StockPaymentFailedEventQueueName, y =>
-        {
-            y.ConfigureConsumer<PaymentFailedEventConsumer>(context);
-        });
+
     });
 
 });
