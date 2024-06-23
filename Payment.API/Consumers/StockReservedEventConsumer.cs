@@ -21,12 +21,22 @@ namespace Payment.API.Consumers
             if (balance > context.Message.Payment.TotalPrice)
             {
                 _logger.LogInformation($"{context.Message.Payment.TotalPrice} TL was withdrawed from credit card for user id={context.Message.BuyerId}");
-                await _publishEndpoint.Publish(new PaymentSuccessedEvent() { BuyerId = context.Message.BuyerId, OrderId = context.Message.OrderId });
+                await _publishEndpoint.Publish(new PaymentCompletedEvent()
+                {
+                    BuyerId = context.Message.BuyerId,
+                    OrderId = context.Message.OrderId
+                });
             }
             else
             {
                 _logger.LogInformation($"{context.Message.Payment.TotalPrice} TL was not withdrawed from credit card for user id={context.Message.BuyerId}");
-                await _publishEndpoint.Publish(new PaymentFailedEvent() { OrderId = context.Message.OrderId, BuyerId = context.Message.BuyerId, Message = "not withdrawed" });
+                await _publishEndpoint.Publish(new PaymentFailedEvent()
+                {
+                    OrderId = context.Message.OrderId,
+                    BuyerId = context.Message.BuyerId,
+                    Message = "not withdrawed",
+                    OrderItems = context.Message.OrderItems
+                });
             }
 
         }

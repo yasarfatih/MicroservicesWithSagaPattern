@@ -51,7 +51,6 @@ namespace Stock.API.Consumer
                     OrderItems = context.Message.OrderItems,
                 };
                 await _sendEndpointProvider.Send(stockReservedEvent);
-                var a = 1;
             }
             else
             {
