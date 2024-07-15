@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Shared.Interfaces
 {
-    public interface IOrderCreatedEvent:CorrelatedBy<Guid>
+    public interface IStockReservedEvent : CorrelatedBy<Guid>
     {
-        public List<OrderItemMessage> OrderItems { get; set; }
+        List<OrderItemMessage> OrderItems { get; set; }
     }
 }

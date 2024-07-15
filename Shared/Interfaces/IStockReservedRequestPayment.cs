@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Interfaces
 {
-    public interface IOrderCreatedEvent:CorrelatedBy<Guid>
+    public interface IStockReservedRequestPayment : CorrelatedBy<Guid>
     {
+        public PaymentMessage Payment { get; set; }
         public List<OrderItemMessage> OrderItems { get; set; }
     }
 }

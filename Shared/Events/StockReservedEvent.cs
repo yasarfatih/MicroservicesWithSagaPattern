@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Shared.Events
 {
-    public class OrderCreatedEvent : IOrderCreatedEvent
+    public class StockReservedEvent : IStockReservedEvent
     {
-        public OrderCreatedEvent(Guid correlationId)
+        public StockReservedEvent(Guid correlationId)
         {
-            CorrelationId = correlationId;
+            correlationId = correlationId;
         }
-        public List<OrderItemMessage> OrderItems { get; set; } = new List<OrderItemMessage>();
+        public List<OrderItemMessage> OrderItems { get; set; }
 
         public Guid CorrelationId { get; }
     }
