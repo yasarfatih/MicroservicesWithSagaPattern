@@ -18,6 +18,9 @@ namespace SagaStateMachineWorkerService.Models
 
             Event(() => OrderCreatedRequestEvent, y => y.CorrelateBy<int>(x => x.OrderId, z => z.Message.OrderId).SelectId(context => Guid.NewGuid()));
 
+            Event(() => StockReservedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
+
+
             Initially(When(OrderCreatedRequestEvent).Then(context =>
             {
                 context.Instance.BuyerId = context.Data.BuyerId;
