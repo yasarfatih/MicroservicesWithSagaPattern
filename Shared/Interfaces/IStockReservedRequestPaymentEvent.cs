@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Interfaces
 {
-    public interface IStockReservedRequestPayment : CorrelatedBy<Guid>
+    public interface IStockReservedRequestPaymentEvent : CorrelatedBy<Guid>
     {
         public PaymentMessage Payment { get; set; }
         public List<OrderItemMessage> OrderItems { get; set; }
+        public string BuyerId { get; set; }
     }
 }

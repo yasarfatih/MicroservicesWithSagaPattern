@@ -18,15 +18,18 @@ builder.Services.AddMassTransit(x =>
                 m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
             });
         });
-        x.UsingRabbitMq((context, cfg) =>
+
+        
+      x.UsingRabbitMq((context, cfg) =>
         {
             cfg.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
+            cfg.UseInMemoryOutbox(context);
 
             cfg.ReceiveEndpoint(RabbitMQSettingsConst.OrderSaga, e =>
             {
                 e.ConfigureSaga<OrderStateInstance>(context);
             });
-
+    
         });
     });
 });

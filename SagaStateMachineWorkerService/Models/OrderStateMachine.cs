@@ -23,36 +23,37 @@ namespace SagaStateMachineWorkerService.Models
 
             Initially(When(OrderCreatedRequestEvent).Then(context =>
             {
-                context.Instance.BuyerId = context.Data.BuyerId;
-                context.Instance.OrderId = context.Data.OrderId;
-                context.Instance.CreatedDate = DateTime.Now;
-                context.Instance.Cardname = context.Data.Payment.Cardname;
-                context.Instance.CardNumber = context.Data.Payment.CardNumber;
-                context.Instance.CVV = context.Data.Payment.CVV;
-                context.Instance.Expiration = context.Data.Payment.Expiration;
-                context.Instance.TotalPrice = context.Data.Payment.TotalPrice;
+                context.Saga.BuyerId = context.Message.BuyerId;
+                context.Saga.OrderId = context.Message.OrderId;
+                context.Saga.CreatedDate = DateTime.Now;
+                context.Saga.Cardname = context.Message.Payment.Cardname;
+                context.Saga.CardNumber = context.Message.Payment.CardNumber;
+                context.Saga.CVV = context.Message.Payment.CVV;
+                context.Saga.Expiration = context.Message.Payment.Expiration;
+                context.Saga.TotalPrice = context.Message.Payment.TotalPrice;
 
-            }).Publish(context => new OrderCreatedEvent(context.Instance.CorrelationId)
+            }).TransitionTo(OrderCreated).Publish(context => new OrderCreatedEvent(context.Saga.CorrelationId)
             {
-                OrderItems = context.Data.OrderItems
-            }).TransitionTo(OrderCreated));
+                OrderItems = context.Message.OrderItems
+            }));
 
             During(OrderCreated,
                 When(StockReservedEvent)
                 .TransitionTo(StockReserved)
-                .Send(new Uri($"queue:{RabbitMQSettingsConst.PaymentStockReservedRequestQueueName}"), context => new StockReservedRequestPayment(context.Instance.CorrelationId)
+                .Send(new Uri($"queue:{RabbitMQSettingsConst.PaymentStockReservedRequestQueueName}"), context => new StockReservedRequestPaymentEvent(context.Saga.CorrelationId)
                 {
-                    OrderItems = context.Data.OrderItems,
+                    OrderItems = context.Message.OrderItems,
                     Payment = new PaymentMessage()
                     {
-                        Cardname = context.Instance.Cardname,
-                        CardNumber = context.Instance.CardNumber,
-                        CVV = context.Instance.CVV,
-                        Expiration = context.Instance.CVV,
-                        TotalPrice = context.Instance.TotalPrice
-                    }
+                        Cardname = context.Saga.Cardname,
+                        CardNumber = context.Saga.CardNumber,
+                        CVV = context.Saga.CVV,
+                        Expiration = context.Saga.CVV,
+                        TotalPrice = context.Saga.TotalPrice
+                    },
+                    BuyerId= context.Saga.BuyerId,
                 }
-                ).Then(context => { Console.WriteLine($"OrderCreatedRequestEvent After:{context.Instance}---------------------------"); }));
+                ).Then(context => { Console.WriteLine($"OrderCreatedRequestEvent After:{context.Saga}"); }));
 
         }
     }
